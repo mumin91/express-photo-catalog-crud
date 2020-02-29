@@ -7,7 +7,7 @@ const fs = require('fs')
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'public/images');
+        cb(null, 'public/images/uploads');
     },
 
     filename: (req, file, cb) => {
@@ -49,7 +49,7 @@ router.route('/photo/:id')
     try {
 
         const photo = await photoModel.findByIdAndDelete(req.params.id)
-        fs.unlinkSync(`./public/images/${photo.url}`);
+        fs.unlinkSync(`./public/images/uploads/${photo.url}`);
 
 
         if (!photo) res.status(404).send("No item found")
