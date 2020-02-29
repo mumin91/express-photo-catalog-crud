@@ -1,13 +1,13 @@
 var express = require('express');
 const photoModel = require('../models/photos');
 var router = express.Router();
-const cors = require('cors')
+const cors = require('./cors');
 const multer = require('multer');
 const fs = require('fs')
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'public/images/uploads');
+        cb(null, 'public/images');
     },
 
     filename: (req, file, cb) => {
@@ -15,11 +15,11 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({ storage: storage});
+const upload = multer({storage: storage});
 
 router.route('/photos')
-    .post(cors, upload.single('photo'), async (req, res) => {
-        try{
+    .post(cors.corsWithOptions, upload.single('photo'), async (req, res) => {
+        try {
             const photo = new photoModel({
                 title: req.body.title,
                 date: req.body.date,
@@ -34,7 +34,7 @@ router.route('/photos')
             res.status(500).send(error);
         }
     })
-    .get(cors, async (req, res, next) => {
+    .get(cors.corsWithOptions, async (req, res, next) => {
         const photos = await photoModel.find({});
 
         try {
@@ -45,21 +45,20 @@ router.route('/photos')
     });
 
 router.route('/photo/:id')
-    .delete(cors, async (req, res) => {
-    try {
+    .delete(cors.corsWithOptions, async (req, res) => {
+        try {
 
-        const photo = await photoModel.findByIdAndDelete(req.params.id)
-        fs.unlinkSync(`./public/images/uploads/${photo.url}`);
+            const photo = await photoModel.findByIdAndDelete(req.params.id)
+            fs.unlinkSync(`./public/images/${photo.url}`);
 
 
-        if (!photo) res.status(404).send("No item found")
-        res.status(200).send()
-    } catch (err) {
-        console.log(err)
-        res.status(500).send(err)
-    }
-})
-
+            if (!photo) res.status(404).send("No item found")
+            res.status(200).send()
+        } catch (err) {
+            console.log(err)
+            res.status(500).send(err)
+        }
+    })
 
 
 module.exports = router;
