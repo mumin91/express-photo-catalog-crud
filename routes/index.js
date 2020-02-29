@@ -1,7 +1,7 @@
 var express = require('express');
 const photoModel = require('../models/photos');
 var router = express.Router();
-const cors = require('./cors');
+const cors = require('cors')
 const multer = require('multer');
 const fs = require('fs')
 
@@ -18,7 +18,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage});
 
 router.route('/photos')
-    .post(cors.corsWithOptions, upload.single('photo'), async (req, res) => {
+    .post(cors, upload.single('photo'), async (req, res) => {
         try{
             const photo = new photoModel({
                 title: req.body.title,
@@ -34,7 +34,7 @@ router.route('/photos')
             res.status(500).send(error);
         }
     })
-    .get(cors.corsWithOptions, async (req, res, next) => {
+    .get(cors, async (req, res, next) => {
         const photos = await photoModel.find({});
 
         try {
@@ -45,7 +45,7 @@ router.route('/photos')
     });
 
 router.route('/photo/:id')
-    .delete(cors.corsWithOptions, async (req, res) => {
+    .delete(cors, async (req, res) => {
     try {
 
         const photo = await photoModel.findByIdAndDelete(req.params.id)
