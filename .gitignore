@@ -2,8 +2,6 @@
 # Created by https://www.gitignore.io/api/node,dotenv,webstorm+all
 # Edit at https://www.gitignore.io/?templates=node,dotenv,webstorm+all
 
-### uplaods folder ###
-uploads/
 
 
 ### dotenv ###
